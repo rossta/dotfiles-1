@@ -12,6 +12,9 @@
   co = checkout
   pf = push --force-with-lease
   st = status
+	fu = fetch upstream
+	rc = rebase --continue
+	ra = rebase --abort
 [core]
   excludesfile = ~/.gitignore
   autocrlf = input
