@@ -1,0 +1,123 @@
+set shell=bash
+
+set guifont=Menlo:h14            " Font family and font size.
+
+let g:ackprg = 'ag --nogroup --nocolor --column'
+set background=dark
+set hidden
+set tags=./tags,tags;$HOME
+set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.idea/*,*/.DS_Store,*/vendor,*/node_modules/*,*/bower_components/*,*/_build/*,*/deps,*.beam,*.png,*.jpg,*.svg,*.ttf,*.woff,*.eot
+
+unlet g:ctrlp_user_command
+let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
+" let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+" let g:ctrlp_custom_ignore = '\v[\/](node_modules|bower_components|_build|deps|log)|\v[\/]\.(git|hg|svn'
+let g:ctrlp_custom_ignore = '\v[\/](node_modules|target|dist|bower_components|_build|deps|log)|(\.(swp|ico|git|svn))$'
+" let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn)'
+
+let NERDTreeIgnore = []
+let NERDTreeIgnore += ['^tmp$', '^node_modules$', '^bower_components$', '^dist$', '^pkg$', '^build$', '^_build$', '^deps$']
+
+" let g:markdown_fenced_languages = ['html', 'python', 'ruby', 'javascript', 'bash=sh']
+
+let g:jsx_ext_required = 0
+
+let g:elm_format_autosave = 1
+
+" colorscheme blackboard
+" colorscheme cobalt
+" colorscheme solarized
+" colorscheme clarity
+" colorscheme tomorrow
+" colorscheme tomorrow-night-bright
+colorscheme hybrid
+" colorscheme molokai
+
+runtime macros/matchit.vim
+
+" {{{ Custom Functions
+func! StripTrailingWhitespace()
+  let l = line(".")
+  let c = col(".")
+  %s/\s\+$//e          " Remove trailing white space
+  %s/\n\{3,}/\r\r/e    " Condense multiple empty lines into one
+  " %s#\($\n\s*\)\+\%$## " Only one newline char at EOF
+  call cursor(l, c)
+endf
+
+command! -nargs=* Wrap set wrap linebreak nolist
+
+command! -nargs=0 -bar Qargs execute 'args' QuickfixFilenames()
+function! QuickfixFilenames()
+  " Building a hash ensures we get each buffer only once
+  let buffer_numbers = {}
+  for quickfix_item in getqflist()
+    let buffer_numbers[quickfix_item['bufnr']] = bufname(quickfix_item['bufnr'])
+  endfor
+  return join(map(values(buffer_numbers), 'fnameescape(v:val)'))
+endfunction
+
+" }}}
+
+" Remove any trailing white space on save
+"au BufWritePre * :call <SID>StripTrailingWhitespace()
+au BufWritePre * :silent call StripTrailingWhitespace()
+
+map <Leader>i mmgg=G`m
+vmap <D-j> gj
+vmap <D-k> gk
+vmap <D-4> g$
+vmap <D-6> g^
+vmap <D-0> g^
+nmap <D-j> gj
+nmap <D-k> gk
+nmap <D-4> g$
+nmap <D-6> g^
+nmap <D-0> g^
+
+noremap <D-M-Left> gT
+noremap <D-M-Right> gt
+nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
+
+" Two semicolons are easy to type.
+:inoremap ;; <Esc>
+:imap jk <Esc>
+:inoremap <C-CR> <Esc>
+
+map <silent> <C-n> :NERDTreeToggle<CR>
+
+" Start interactive EasyAlign in visual mode (e.g. vip<Enter>)
+vmap <Enter> <Plug>(EasyAlign)
+
+" Start interactive EasyAlign for a motion/text object (e.g. gaip)
+nmap ga <Plug>(EasyAlign)
+
+" Save file
+nmap <C-s> :wa<CR>
+vmap <C-s> <Esc><C-s>gv
+imap <C-s> <Esc><C-s>
+
+" vim-test mappings
+nmap <silent> <leader>t :TestNearest<CR>
+nmap <silent> <leader>T :TestFile<CR>
+nmap <silent> <leader>a :TestSuite<CR>
+nmap <silent> <leader>l :TestLast<CR>
+nmap <silent> <leader>g :TestVisit<CR>
+
+" xmpfilter mappings
+autocmd FileType ruby nmap <buffer> <D-m> <Plug>(xmpfilter-mark)
+autocmd FileType ruby xmap <buffer> <D-m> <Plug>(xmpfilter-mark)
+autocmd FileType ruby imap <buffer> <D-m> <Plug>(xmpfilter-mark)
+
+autocmd FileType ruby nmap <buffer> <D-r> <Plug>(xmpfilter-run)
+autocmd FileType ruby xmap <buffer> <D-r> <Plug>(xmpfilter-run)
+autocmd FileType ruby imap <buffer> <D-r> <Plug>(xmpfilter-run)
+
+" au BufNewFile,BufFilePre,BufRead *.md set filetype=markdown
+
+" let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+" let &t_SR = "\<Esc>]50;CursorShape=2\x7"
+" let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+
+:autocmd InsertEnter * set cul
+:autocmd InsertLeave * set nocul
