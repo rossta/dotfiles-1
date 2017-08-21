@@ -41,3 +41,5 @@ alias gitfu="git fetch origin -v; git fetch upstream -v; git rebase upstream/mas
 
 alias be="bundle exec"
 alias szrc="source ~/.zshrc"
+
+alias cl="clear"

@@ -11,3 +11,9 @@ tags
 tmp/**/*
 !tmp/cache/.keep
 *.pyc
+local_specs/
+.envrc
+node_modules/
+public/packs/
+turbulence/
+public/packs-test/
