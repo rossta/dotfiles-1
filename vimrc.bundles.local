@@ -47,3 +47,5 @@ Plug 'janko-m/vim-test'
 " Plug 'lambdatoast/elm.vim'
 " Plug 'elmcast/elm-vim'
 " Plug 'junegunn/vim-emoji'
+Plug 'posva/vim-vue'
+Plug 'dracula/vim' " theme
